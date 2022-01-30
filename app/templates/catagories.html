@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <h1 id="categorization">Categorization</h1>
+            <p><code>is-it-down</code> categories are handled by administrators. If you would like to modify this page
+                ensure you have proper permissions.</p>
+            <h2 id="badges">Badges</h2>
+            <p>Category badges will show up on the primary dashboard and will also be referenced in the
+                <code>site contents</code> pages.
+            </p>
+
+
+        </div>
+        <script>
+            function containsSpecialChars(str) {
+                const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                return specialChars.test(str);
+            }
+            function toggleSelf(self) {
+                var row = self.parentElement.parentElement;
+                $(row).find(":input:not(#editButton)").each(function () {
+                    $(this).prop('disabled', function (i, v) { return !v; });
+                });
+            };
+            function deleteSelf(self) {
+                self.parentElement.parentElement.remove();
+            }
+            function validateTitle(self) {
+                self.value = self.value.trim()
+                if (containsSpecialChars(self.value) || self.value.length == 0){
+                    $(self).addClass("is-invalid");
+                    $(self).removeClass("is-valid");
+                } else {
+                    $(self).addClass("is-valid");
+                    $(self).removeClass("is-invalid");
+                }
+            }
+            function validateColor(self) {
+                const re = /^#[0-9a-fA-F]{3,6}$/i;
+                var row = self.parentElement.parentElement;
+                var colorObject = $(row).find("#colorSelector")[0];
+
+                self.value = self.value.trim()
+                if (re.test(self.value)){
+                    $(self).addClass("is-valid");
+                    $(self).removeClass("is-invalid");
+                    colorObject.value = self.value;
+                } else {
+                    $(self).addClass("is-invalid");
+                    $(self).removeClass("is-valid");
+                }
+            }
+            function saveSelf(self) {
+                var data = {};
+                var row = self.parentElement.parentElement;
+                var title = $(row).find("#catagoryTitle")[0];
+                var color = $(row).find("#catagoryColor")[0];
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/catagories/save",
+                });
+            }
+            $(document).ready(function () {
+                $("#addRow").on("click", function () {
+                    var clone = $('.hidden-table-reference').clone();
+                    clone.removeAttr('hidden').removeClass('hidden-table-reference');
+                    $("#catagoryTable tbody").append(clone);
+
+                });
+            });
+        </script>
+        <div class="col-7">
+            <table id="catagoryTable" class="table table-borderless order-list">
+                <thead>
+                    <tr>
+                        <td>Catagory</td>
+                        <td>Color</td>
+                        <td></td>
+                        <td>Actions</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr hidden class="hidden-table-reference">
+                        <td class="col-sm-4">
+                            <input disabled onchange="validateTitle(this)" id="catagoryTitle" placeholder="Super Cool Tech" type="text" name="name"
+                                class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateColor(this)" id="catagoryColor" placeholder="#FFFFFF" type="mail" name="mail"
+                                class="form-control" />
+                        </td>
+                        <td class="col">
+                            <input disabled id="colorSelector" type="color" class="form-control form-control-color"
+                                value="#0d6efd">
+                        </td>
+                        <td class="col-sm-4">
+                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                            <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                    class="fas fa-save"></i></button>
+                            <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
+                                    class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-sm-4">
+                            <input disabled onchange="validateTitle(this)" id="catagoryTitle" placeholder="Super Cool Tech" type="text"
+                                class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateColor(this)" id="catagoryColor" placeholder="#FFFFFF" class="form-control" />
+                        </td>
+                        <td class="col">
+                            <input disabled id="colorSelector" type="color" class="form-control form-control-color"
+                                value="#0d6efd">
+                        </td>
+                        <td class="col-sm-4">
+                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                            <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                    class="fas fa-save"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <button id="addRow" type="button" class="btn btn-outline-primary">Add row</button>
+                            <button type="button" class="btn btn-outline-warning"><i
+                                    class="fas fa-history"></i></button>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary">Save All</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
