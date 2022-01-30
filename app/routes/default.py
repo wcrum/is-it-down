@@ -39,18 +39,15 @@ def techstack(*args, **kwgs):
 
     abort(404)
 
+
 @bp.route("/")
 def server(*args, **kwgs):
 
     with SQLSession(current_app.engine) as s:
-        logs = select(ServerLog).order_by(
-            ServerLog.id.desc()
-        ).limit(5)
+        logs = select(ServerLog).order_by(ServerLog.id.desc()).limit(5)
         logs = s.exec(logs).all()
 
-        down_logs = select(Server).where(
-            Server.status == "DOWN"
-        )
+        down_logs = select(Server).where(Server.status == "DOWN")
         down_logs = s.exec(down_logs).all()
 
         popular_sites = select(Server).limit(25)
@@ -58,17 +55,16 @@ def server(*args, **kwgs):
         popular_sites = s.exec(popular_sites).all()
 
     return render_template(
-        "main/server.html",
-        logs = logs,
-        down_logs = down_logs,
-        popular_sites = popular_sites
+        "main/server.html", logs=logs, down_logs=down_logs, popular_sites=popular_sites
     )
 
     abort(404)
 
+
 @bp.route("/server/<string:sitename>")
 def get_server(sitename, *args, **kwgs):
     return sitename
+
 
 @bp.before_request
 def before_request():

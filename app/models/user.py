@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
 
+
 class User(SQLModel, table=True):
     id: int = Field(primary_key=True)
     access: str = Field(default="User")

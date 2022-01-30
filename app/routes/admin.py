@@ -25,7 +25,7 @@ def index():
     )
 
 
-@bp.route("/catagory", methods = ["POST"])
+@bp.route("/catagory", methods=["POST"])
 def catagory():
     data = request.form
 
@@ -36,9 +36,9 @@ def catagory():
     with SQLSession(current_app.engine) as s:
         if title and color:
             _catagory = Catagory(
-                title = data.get("title"),
-                meta_ref = data.get("title").lower().replace(" ", "-"),
-                color = data.get("color")
+                title=data.get("title"),
+                meta_ref=data.get("title").lower().replace(" ", "-"),
+                color=data.get("color"),
             )
             s.add(_catagory)
             s.commit()
@@ -51,20 +51,17 @@ def catagory():
             s.commit()
             s.refresh(results)
 
-    return jsonify({
-        "result":"Operate successfully"
-    })
+    return jsonify({"result": "Operate successfully"})
 
-@bp.route("/catagories", methods = ["GET", "POST"])
+
+@bp.route("/catagories", methods=["GET", "POST"])
 def catagories():
     if request.method == "GET":
         with SQLSession(current_app.engine) as s:
             results = s.exec(select(Catagory)).all()
 
             return render_template(
-                "admin/catagories.html", 
-                sesssion=session,
-                catagories = results
+                "admin/catagories.html", sesssion=session, catagories=results
             )
     else:
         data = request.get_json()

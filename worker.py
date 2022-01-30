@@ -15,6 +15,7 @@ settings = getattr(sys.modules[__name__].config, API_ENVIRONMENT)
 
 engine = create_engine(settings.DATABASE_URI)
 
+
 def main_thread():
     with Session(engine) as session:
         server_list = session.exec(select(Server)).all()
@@ -23,11 +24,8 @@ def main_thread():
             error = None
             try:
                 r = requests.get(
-                    "https://" + server.domain_name,
-                    stream = True,
-                    timeout = 30
+                    "https://" + server.domain_name, stream=True, timeout=30
                 )
-
 
             except requests.exceptions.ConnectionError:
                 error = "DOWN"
@@ -45,12 +43,12 @@ def main_thread():
                     address = None
 
                 _log = ServerLog(
-                    server_id = server.id,
-                    datetime = datetime.now(),
-                    response_code = r.status_code,
-                    response_time = r.elapsed.total_seconds() * 100,
-                    ipaddress = address,
-                    url = server.domain_name
+                    server_id=server.id,
+                    datetime=datetime.now(),
+                    response_code=r.status_code,
+                    response_time=r.elapsed.total_seconds() * 100,
+                    ipaddress=address,
+                    url=server.domain_name,
                 )
                 server.status = "UP"
                 server.response_time = _log.response_time
@@ -59,10 +57,10 @@ def main_thread():
 
             else:
                 _log = ServerLog(
-                    server_id = server.id,
-                    datetime = datetime.now(),
-                    url = server.domain_name,
-                    error = server.status
+                    server_id=server.id,
+                    datetime=datetime.now(),
+                    url=server.domain_name,
+                    error=server.status,
                 )
 
                 server.status = error
@@ -70,6 +68,7 @@ def main_thread():
             session.add(_log)
             session.commit()
             session.refresh(server)
+
 
 while True:
     main_thread()

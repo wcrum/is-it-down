@@ -8,7 +8,7 @@ req = requests.get(page)
 soup = BeautifulSoup(req.text, features="html.parser")
 link_box = soup.find("div", {"class": div})
 dods_link = {}
-children = link_box.findChildren("a" , recursive=True)
+children = link_box.findChildren("a", recursive=True)
 
 for child in children:
     href = child["href"]
@@ -19,6 +19,6 @@ for child in children:
     dods_link[url.netloc] = ""
 
 print(dods_link.keys())
-with open('data.txt', 'a') as f:
+with open("data.txt", "a") as f:
     for link in dods_link.keys():
-        f.write(f'{link}\n')
+        f.write(f"{link}\n")

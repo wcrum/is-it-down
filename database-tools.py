@@ -11,28 +11,33 @@ settings = getattr(sys.modules[__name__].config, API_ENVIRONMENT)
 
 engine = create_engine(settings.DATABASE_URI)
 
+
 @click.group()
 @click.pass_context
 def main():
     pass
 
-@main.command(name = "settings")
+
+@main.command(name="settings")
 def get_settings():
     """
     Prints current API settings from $API_ENVIRONMENT.
     """
     click.echo(settings)
 
-@main.group(name = "import")
+
+@main.group(name="import")
 def import_group():
     pass
 
-@import_group.command(name = "csv")
+
+@import_group.command(name="csv")
 def csv_file(file):
     """
     Commands for importing a database.
     """
     import csv
+
     with Session(engine) as session:
         with open(file, "r") as stream:
             csv_reader = csv.DictReader(stream)
@@ -42,16 +47,17 @@ def csv_file(file):
                     line_count += 1
 
                 _server = Server(
-                    domain_name = row["Domain Name"],
-                    domain_type = row["Domain Type"],
-                    agency = row["Agency"],
-                    organization = row["Organization"]
+                    domain_name=row["Domain Name"],
+                    domain_type=row["Domain Type"],
+                    agency=row["Agency"],
+                    organization=row["Organization"],
                 )
                 session.add(_server)
         session.commit()
 
-@import_group.command(name = "file")
-@click.argument('file')
+
+@import_group.command(name="file")
+@click.argument("file")
 def basic_file(file):
     with Session(engine) as session:
         with open(file, "r") as stream:
@@ -59,7 +65,7 @@ def basic_file(file):
             for row in stream:
                 cats = []
                 _server = Server(
-                    domain_name = row.strip(),
+                    domain_name=row.strip(),
                 )
                 if "tricare" in _server.domain_name.lower():
                     cats += "Medical"
@@ -68,10 +74,9 @@ def basic_file(file):
                 elif "marines" in _server.domain_name.lower():
                     cats += "Marines"
 
-                
-
                 session.add(_server)
         session.commit()
+
 
 @main.group()
 def tables():
@@ -79,6 +84,7 @@ def tables():
     Commands for handling database tables.
     """
     pass
+
 
 @tables.command()
 def drop():
@@ -98,6 +104,7 @@ def drop():
     meta.drop_all(engine, checkfirst=False)
     print("Dropped tables.")
 
+
 @tables.command()
 def create():
     """
@@ -113,5 +120,5 @@ def create():
 
 cli = click.CommandCollection(sources=[main])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
