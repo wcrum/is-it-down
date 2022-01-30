@@ -1,7 +1,8 @@
-from sqlmodel import SQLModel, Field, Column, JSON, Relationship
+from sqlmodel import SQLModel, Field, JSON, Relationship, VARCHAR
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
+from sqlalchemy import String, Column
 
 
 class ServerCatagoryLink(SQLModel, table=True):
@@ -22,8 +23,8 @@ class ServerOrganizationLink(SQLModel, table=True):
 
 class Catagory(SQLModel, table = True):
     id: int = Field(primary_key = True)
-    title: str
-    meta_ref: str
+    title: str = Field(sa_column=Column("title", String(255), unique=True))
+    meta_ref: str = Field(sa_column=Column("meta_ref", String(255), unique=True))
     color: str
     servers: List["Server"] = Relationship(back_populates="catagories", link_model=ServerCatagoryLink)
 

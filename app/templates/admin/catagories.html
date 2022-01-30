@@ -33,9 +33,11 @@
                 if (containsSpecialChars(self.value) || self.value.length == 0) {
                     $(self).addClass("is-invalid");
                     $(self).removeClass("is-valid");
+                    return false;
                 } else {
                     $(self).addClass("is-valid");
                     $(self).removeClass("is-invalid");
+                    return true;
                 }
             }
             function validateColor(self) {
@@ -48,22 +50,28 @@
                     $(self).addClass("is-valid");
                     $(self).removeClass("is-invalid");
                     colorObject.value = self.value;
+                    return true;
                 } else {
                     $(self).addClass("is-invalid");
                     $(self).removeClass("is-valid");
+                    return false;
                 }
             }
             function saveSelf(self) {
                 var data = {};
                 var row = self.parentElement.parentElement;
                 var title = $(row).find("#catagoryTitle")[0];
+                var id = $(title).attr("model-id");
+                console.log(id);
                 var color = $(row).find("#catagoryColor")[0];
 
-                if ($(title).hasClass("is-valid") && $(color).hasClass("is-valid")) {
+                if (validateColor(color) && validateTitle(title)) {
                     $.ajax({
                         type: "POST",
-                        url: "/admin/catagories",
+                        url: "/admin/catagory",
+                        dataType:'json',
                         data: {
+                            "id": id,
                             "title": title.value,
                             "color": color.value
                         }
@@ -92,7 +100,7 @@
                 <tbody>
                     <tr hidden class="hidden-table-reference">
                         <td class="col-sm-4">
-                            <input disabled onchange="validateTitle(this)" id="catagoryTitle"
+                            <input disabled model-id="" onchange="validateTitle(this)" id="catagoryTitle"
                                 placeholder="Super Cool Tech" type="text" name="name" class="form-control" />
                         </td>
                         <td class="col-sm-2">
@@ -112,6 +120,7 @@
                                     class="fas fa-trash"></i></button>
                         </td>
                     </tr>
+                    {% if catagories|length == 0 %}
                     <tr>
                         <td class="col-sm-4">
                             <input disabled onchange="validateTitle(this)" id="catagoryTitle"
@@ -122,8 +131,7 @@
                                 class="form-control" />
                         </td>
                         <td class="col">
-                            <input disabled id="colorSelector" type="color" class="form-control form-control-color"
-                                value="#0d6efd">
+                            <input disabled id="colorSelector" type="color" class="form-control form-control-color">
                         </td>
                         <td class="col-sm-4">
                             <button onclick="toggleSelf(this)" id="editButton" type="button"
@@ -132,6 +140,34 @@
                                     class="fas fa-save"></i></button>
                         </td>
                     </tr>
+                    {% else %}
+                    {% for cat in catagories %}
+                    <tr>
+                        <td class="col-sm-4">
+                            <input disabled model-id="{{ cat.id }}" onchange="validateTitle(this)" id="catagoryTitle"
+                                placeholder="Super Cool Tech" value="{{ cat.title }}" type="text" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateColor(this)" value="{{ cat.color }}" id="catagoryColor" placeholder="#FFFFFF"
+                                class="form-control" />
+                        </td>
+                        <td class="col">
+                            <input disabled id="colorSelector" type="color" class="form-control form-control-color"
+                                value="{{ cat.color }}">
+                        </td>
+                        <td class="col-sm-4">
+                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                            <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                    class="fas fa-save"></i></button>
+                            {% if loop.index > 1 %}
+                            <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
+                                class="fas fa-trash"></i></button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
                 </tbody>
                 <tfoot>
                     <tr>

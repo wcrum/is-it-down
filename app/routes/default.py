@@ -58,7 +58,7 @@ def server(*args, **kwgs):
         popular_sites = s.exec(popular_sites).all()
 
     return render_template(
-        "server.html",
+        "main/server.html",
         logs = logs,
         down_logs = down_logs,
         popular_sites = popular_sites
