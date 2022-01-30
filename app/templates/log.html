@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">timestamp</th>
+                    <th scope="col">level</th>
+                    <th scope="col">request</th>
+                    <th scope="col">requester</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                    <td>@mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Larry the Bird</td>
+                    <td>@twitter</td>
+                    <td>@mdo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-12">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

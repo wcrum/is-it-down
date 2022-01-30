@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-sm">
+    <div class="container">
+        <div class="row">
+            {% if page.meta["show_toc"] == "True" %}
+            <div class="col">
+
+            </div>
+            <div class="col-6">
+                {{ page.html|safe }}
+            </div>
+            <div class="col-4">
+                {{ page.toc_html|safe }}
+
+            </div>
+            {% else %}
+            <div class="col">
+            </div>
+            <div class="col-8">
+                {{ page.html|safe }}
+            </div>
+            <div class="col">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

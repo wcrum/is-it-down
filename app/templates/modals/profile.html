@@ -1,0 +1,65 @@
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel">My Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body mt-3 mb-3">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6 me-5">
+                            <form>
+                                <div class="mb-3">
+                                    <div class="input-group mb-3">
+                                        <span disabled class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+                                        <input disabled placeholder="{{ session.claims['user_name'] }}" type="text"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="mb-3">
+                                        <div class="input-group mb-3">
+                                            <span disabled class="input-group-text" id="inputGroup-sizing-sm">Email
+                                                Address</span>
+                                            <input disabled placeholder="{{ session.claims['email'] }}" type="text"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div id="emailHelp" class="form-text"><small>
+                                            Information provided by cloud.gov
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="input-group mb-3">
+                                        <span disabled class="input-group-text" id="inputGroup-sizing-sm">Account Type</span>
+                                        <input disabled placeholder="{{ session['user'].access }}" type="text" class="form-control">
+                                    </div>
+                                    <div id="emailHelp" class="form-text"><small>
+                                        Last Logon: {{ session['user'].last_logon }}
+                                    </small>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-4">
+                            <div class="row">
+                                <p class="fw-bold">
+                                    Profile Picture
+                                </p>
+                            </div>
+                            <div class="row float-start">
+                                <svg width="150" height="150"
+                                    data-jdenticon-value="{{ session.claims['email'] }}"></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

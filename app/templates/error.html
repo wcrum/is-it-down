@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="min-height: 75vh !important" class="d-flex flex-column justify-content-center align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-4 text-end justify-content-center align-items-center">
+                <h1>{{ error.code }}</h1>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <h4>
+                        {{ error.name }}
+                    </h4>
+                </div>
+                <div class="row">
+                    <p class="text-muted">
+                        {{ error.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

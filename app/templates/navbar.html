@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-xl">
+        <a class="navbar-brand" href="/">Is it down?</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/techstack">Tech</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/server">Stats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">Admin</a>
+                </li>
+            </ul>
+            {% if session.authenticated %}
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <svg style="width:32px; height:32px" data-jdenticon-value="{{ session.claims['email'] }}"></svg>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownUser1">
+                    <li>
+                        <h6 class="dropdown-header">{{ session.claims['email'] }}</h6>
+                    </li>
+                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#profileModal">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/auth/logout">Sign out</a></li>
+                </ul>
+            </div>
+            {% include '/modals/profile.html' %}
+            {% else %}
+            <div class="col-md-3 text-end">
+                <a class="btn btn-outline-primary" href="/auth/login" role="button">Login</a>
+                <a class="btn btn-primary" href="https://cloud.gov/sign-up/" role="button">Signup</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

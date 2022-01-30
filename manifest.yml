@@ -1,0 +1,21 @@
+---
+version: 1
+applications:
+- name: template-flask-usmc
+  memory: 512MB
+  disk_quota: 512MB
+  random-route: true
+  buildpack: python_buildpack
+  processes:
+  - type: web
+    command: gunicorn main:app -b :8080
+    instances: 1
+  - type: worker
+    command: python3 worker.py
+    health-check-type: process
+    instances: 1
+  env:
+    APP_SETTINGS: Production
+  services:
+    - name: template-flask-uaa
+    - name: template-flask-db

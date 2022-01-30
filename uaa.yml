@@ -1,0 +1,21 @@
+spring_profiles: hsqldb
+
+oauth:
+  client:
+    override: true
+    autoapprove:
+      - my_client_id
+  clients:
+    my_client_id:
+      id: my_client_id
+      secret: my_client_secret
+      authorized-grant-types: authorization_code,refresh_token
+      scope: openid
+      authorities: uaa.none
+      redirect-uri: http://localhost:8000/auth/callback
+
+scim:
+  username_pattern: '[a-z0-9+\-_.@]+'
+  users:
+    - paul|wombat|paul@test.org|Paul|Smith|openid
+    - stefan|wallaby|stefan@test.org|Stefan|Schmidt|openid
