@@ -1,4 +1,4 @@
 env/
 __pycache__
 .pytest_cache
-.DS_STORE
+.DS_Store
