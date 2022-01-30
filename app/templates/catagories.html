@@ -30,7 +30,7 @@
             }
             function validateTitle(self) {
                 self.value = self.value.trim()
-                if (containsSpecialChars(self.value) || self.value.length == 0){
+                if (containsSpecialChars(self.value) || self.value.length == 0) {
                     $(self).addClass("is-invalid");
                     $(self).removeClass("is-valid");
                 } else {
@@ -44,7 +44,7 @@
                 var colorObject = $(row).find("#colorSelector")[0];
 
                 self.value = self.value.trim()
-                if (re.test(self.value)){
+                if (re.test(self.value)) {
                     $(self).addClass("is-valid");
                     $(self).removeClass("is-invalid");
                     colorObject.value = self.value;
@@ -58,18 +58,24 @@
                 var row = self.parentElement.parentElement;
                 var title = $(row).find("#catagoryTitle")[0];
                 var color = $(row).find("#catagoryColor")[0];
-                
-                $.ajax({
-                    type: "POST",
-                    url: "/catagories/save",
-                });
+
+                if ($(title).hasClass("is-valid") && $(color).hasClass("is-valid")) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/catagories",
+                        data: {
+                            "title": title.value,
+                            "color": color.value
+                        }
+                    });
+                    toggleSelf(self);
+                }
             }
             $(document).ready(function () {
                 $("#addRow").on("click", function () {
                     var clone = $('.hidden-table-reference').clone();
                     clone.removeAttr('hidden').removeClass('hidden-table-reference');
                     $("#catagoryTable tbody").append(clone);
-
                 });
             });
         </script>
@@ -86,12 +92,12 @@
                 <tbody>
                     <tr hidden class="hidden-table-reference">
                         <td class="col-sm-4">
-                            <input disabled onchange="validateTitle(this)" id="catagoryTitle" placeholder="Super Cool Tech" type="text" name="name"
-                                class="form-control" />
+                            <input disabled onchange="validateTitle(this)" id="catagoryTitle"
+                                placeholder="Super Cool Tech" type="text" name="name" class="form-control" />
                         </td>
                         <td class="col-sm-2">
-                            <input disabled onchange="validateColor(this)" id="catagoryColor" placeholder="#FFFFFF" type="mail" name="mail"
-                                class="form-control" />
+                            <input disabled onchange="validateColor(this)" id="catagoryColor" placeholder="#FFFFFF"
+                                type="mail" name="mail" class="form-control" />
                         </td>
                         <td class="col">
                             <input disabled id="colorSelector" type="color" class="form-control form-control-color"
@@ -108,11 +114,12 @@
                     </tr>
                     <tr>
                         <td class="col-sm-4">
-                            <input disabled onchange="validateTitle(this)" id="catagoryTitle" placeholder="Super Cool Tech" type="text"
-                                class="form-control" />
+                            <input disabled onchange="validateTitle(this)" id="catagoryTitle"
+                                placeholder="Super Cool Tech" type="text" class="form-control" />
                         </td>
                         <td class="col-sm-2">
-                            <input disabled onchange="validateColor(this)" id="catagoryColor" placeholder="#FFFFFF" class="form-control" />
+                            <input disabled onchange="validateColor(this)" id="catagoryColor" placeholder="#FFFFFF"
+                                class="form-control" />
                         </td>
                         <td class="col">
                             <input disabled id="colorSelector" type="color" class="form-control form-control-color"

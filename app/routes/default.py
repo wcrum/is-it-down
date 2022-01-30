@@ -105,7 +105,6 @@ def after_request(response):
 
 
 def handle_exception(e):
-    print(dir(e))
     try:
         e.code
     except Exception:
