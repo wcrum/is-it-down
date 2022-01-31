@@ -1,11 +1,11 @@
 version: "3.9"
 services:
-  uaa: 
+  uaa:
     image: hortonworks/cloudbreak-uaa:3.6.3
     ports:
       - "8080:8080"
     environment:
-      - UAA_CONFIG_URL=https://raw.githubusercontent.com/elisoncrum/cloud-gov-flask-template/master/uaa.yml
+      - UAA_CONFIG_URL=https://raw.githubusercontent.com/elisoncrum/is-it-down/master/uaa.yml
   db:
     image: mysql
     ports:
