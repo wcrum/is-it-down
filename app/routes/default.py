@@ -30,7 +30,7 @@ def handle_posts(*args, **kwgs):
     abort(404)
 
 
-@bp.route("/techstack")
+@bp.route("/about")
 def techstack(*args, **kwgs):
 
     return render_markdown(

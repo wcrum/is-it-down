@@ -25,8 +25,13 @@ def index():
     )
 
 
+@bp.route("/organizations", methods=["GET"])
+def get_organizations():
+    return render_template("admin/organizations.html", session=session)
+
+
 @bp.route("/catagory", methods=["POST"])
-def catagory():
+def get_catagory():
     data = request.form
 
     cat_id = data.get("id")
@@ -55,7 +60,7 @@ def catagory():
 
 
 @bp.route("/catagories", methods=["GET", "POST"])
-def catagories():
+def get_post_catagories():
     if request.method == "GET":
         with SQLSession(current_app.engine) as s:
             results = s.exec(select(Catagory)).all()

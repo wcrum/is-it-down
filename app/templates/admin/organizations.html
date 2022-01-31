@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <h1 id="organization-manager">Organization Manager</h1>
+            <p>This page is dedicated to building out relationships between domains and their respective organization or
+                agency. Organizations have many domains and organizations.</p>
+            <p>It is <strong>highly</strong> encouraged that you modify this information with
+                <code>database-tools.py</code> and configuring this site with <code>config.yml</code> files. See the
+                documentation.
+            </p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <table id="catagoryTable" class="table table-borderless order-list">
+                <thead>
+                    <tr>
+                        <td>Organization</td>
+                        <td>Parent</td>
+                        <td>Description</td>
+                        <td>Actions</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <td class="col-sm-4">
+                        <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
+                            placeholder="Super Cool Company" type="text" name="name" class="form-control" />
+                    </td>
+                    <td class="col-sm-2">
+                        <input disabled onchange="validateColor(this)" id="organizationParent" placeholder="Parent"
+                            class="form-control" />
+                    </td>
+                    <td class="col-sm-4">
+                        <textarea disabled class="form-control" id="organizationDesc" rows="1"></textarea>
+                    </td>
+                    <td class="col-sm-4">
+                        <button onclick="toggleSelf(this)" id="editButton" type="button"
+                            class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                        <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                class="fas fa-save"></i></button>
+                        <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
+                                class="fas fa-trash"></i></button>
+                    </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <button id="addRow" type="button" class="btn btn-outline-primary">Add row</button>
+                            <button type="button" class="btn btn-outline-warning"><i
+                                    class="fas fa-history"></i></button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary">Save All</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

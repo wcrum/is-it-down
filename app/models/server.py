@@ -41,7 +41,8 @@ class SaveCatagory(SQLModel):
 class Organization(SQLModel, table=True):
     id: int = Field(primary_key=True)
     title: str
-    agency: str
+    ref_title: str
+    parent: str
     description: str
     servers: List["Server"] = Relationship(
         back_populates="organizations", link_model=ServerOrganizationLink
