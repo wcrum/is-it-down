@@ -11,6 +11,3 @@ Feel free to make pull requests, refactor my code, add features or anything you 
 
 ## Templating
 This application was built using my own Full-Stack template which is intended for cloud.gov Cloud Foundrys platform.
-
-### Contributing
-Feel free to make pull requests, refactor my code, add features or anything you are comfortable with! Open Source is amazing and everyone is welcome! To get started read [Getting Started](docs/getting-started.md).
