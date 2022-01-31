@@ -17,7 +17,7 @@ Using Python 3.x
 
 ### Security
 ![Jasmine](https://img.shields.io/badge/Snyk-%23563D7C.svg?&logo=snyk&logoColor=white)
-![Snyk](https://snyk.io/test/github/elisoncrum/is-it-down/badge.svg)
+[![Known Vulnerabilities](https://snyk.io/test/github/elisoncrum/is-it-down/badge.svg)](https://snyk.io/test/github/elisoncrum/is-it-down/badge.svg)
 ## Templating
 This application was built using my own Full-Stack template which is intended for cloud.gov Cloud Foundrys platform.
 
