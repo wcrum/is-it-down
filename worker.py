@@ -20,11 +20,10 @@ def main_thread():
     with Session(engine) as session:
         server_list = session.exec(select(Server)).all()
         for server in server_list:
-            print(f"trying {server.domain_name}")
             error = None
             try:
                 r = requests.get(
-                    "https://" + server.domain_name, stream=True, timeout=30
+                    "http://" + server.domain_name, stream=True, timeout=30
                 )
 
             except requests.exceptions.ConnectionError:
@@ -38,7 +37,6 @@ def main_thread():
                 try:
                     address = r.raw._connection.sock.getpeername()
                     address = address[0]
-                    print(address)
                 except Exception:
                     address = None
 
@@ -68,7 +66,11 @@ def main_thread():
             session.add(_log)
             session.commit()
             session.refresh(server)
+            session.refresh(_log)
+            print(_log)
+
 
 
 while True:
+    # iterates forever
     main_thread()

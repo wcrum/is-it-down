@@ -40,6 +40,7 @@ class SaveCatagory(SQLModel):
 
 class Organization(SQLModel, table=True):
     id: int = Field(primary_key=True)
+    parent_id: Optional[int] = Field(foreign_key="organization.id")
     title: str
     ref_title: str
     parent: str
