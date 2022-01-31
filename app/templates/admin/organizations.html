@@ -18,37 +18,97 @@
             <table id="catagoryTable" class="table table-borderless order-list">
                 <thead>
                     <tr>
+                        <td>UUID</td>
                         <td>Organization</td>
-                        <td>Parent</td>
+                        <td>Parent UUID</td>
                         <td>Description</td>
                         <td>Actions</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <td class="col-sm-4">
-                        <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
-                            placeholder="Super Cool Company" type="text" name="name" class="form-control" />
-                    </td>
-                    <td class="col-sm-2">
-                        <input disabled onchange="validateColor(this)" id="organizationParent" placeholder="Parent"
-                            class="form-control" />
-                    </td>
-                    <td class="col-sm-4">
-                        <textarea disabled class="form-control" id="organizationDesc" rows="1"></textarea>
-                    </td>
-                    <td class="col-sm-4">
-                        <button onclick="toggleSelf(this)" id="editButton" type="button"
-                            class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
-                        <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
-                                class="fas fa-save"></i></button>
-                        <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
-                                class="fas fa-trash"></i></button>
-                    </td>
+                    <tr hidden class="hidden-table-reference">
+                        <td class="col">
+                            <button disabled type="button" class="btn btn-outline-primary">1</button>
+                        </td>
+                        <td class="col-sm-4">
+                            <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
+                                placeholder="Super Cool Company" type="text" name="name" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateTitle(this)" id="organizationParent" placeholder="Parent"
+                                class="form-control" />
+                        </td>
+                        <td class="col-sm-4">
+                            <textarea disabled class="form-control" id="organizationDesc" rows="1"></textarea>
+                        </td>
+                        <td class="col-sm-4">
+                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                            <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                    class="fas fa-save"></i></button>
+                            <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
+                                    class="fas fa-trash"></i></button>
+                        </td>
                     </tr>
+                    {% if organizations|length == 0 %}
+                    <tr>
+                        <td class="col">
+                            <button disabled type="button" class="btn btn-outline-primary">1</button>
+                        </td>
+                        <td class="col-sm-4">
+                            <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
+                                placeholder="Super Cool Company" type="text" name="name" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateTitle(this)" id="organizationParent" placeholder="Parent"
+                                class="form-control" />
+                        </td>
+                        <td class="col-sm-4">
+                            <textarea disabled class="form-control" id="organizationDesc" rows="1"></textarea>
+                        </td>
+                        <td class="col-sm-4">
+                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                            <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                    class="fas fa-save"></i></button>
+                            <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
+                                    class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    {% for org in organizations %}
+                    <tr>
+                        <td class="col">
+                            <button disabled type="button" class="btn btn-outline-primary">{{ org.id }}</button>
+                        </td>
+                        <td class="col-sm-4">
+                            <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
+                                placeholder="Super Cool Company" value="{{ org.title }}" type="text" name="name" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateTitle(this)" value="{{ org.parent_id }}" id="organizationParent" placeholder="Parent"
+                                class="form-control" />
+                        </td>
+                        <td class="col-sm-4">
+                            <textarea disabled class="form-control"id="organizationDesc" rows="1">{{ org.description }}</textarea>
+                        </td>
+                        <td class="col-sm-4">
+                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                            <button disabled onclick="saveSelf(this)" type="button" class="btn btn-primary"><i
+                                    class="fas fa-save"></i></button>
+                            {% if loop.index > 1 %}
+                            <button disabled onclick="deleteSelf(this)" type="button" class="btn btn-danger"><i
+                                    class="fas fa-trash"></i></button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="4">
                             <button id="addRow" type="button" class="btn btn-outline-primary">Add row</button>
                             <button type="button" class="btn btn-outline-warning"><i
                                     class="fas fa-history"></i></button>

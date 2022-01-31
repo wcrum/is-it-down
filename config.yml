@@ -1,1 +1,8 @@
-version: 1
+organizations:
+  - Super Big Agency:
+    ref_title: super-big-agency
+    description: This agency does a lot of stuff.
+  - 3rd Cyber Space:
+    parent: Super Big Agency
+    ref_title: 3-cyber-space
+    description: This agency also does cool tech stuff.

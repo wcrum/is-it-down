@@ -40,10 +40,9 @@ class SaveCatagory(SQLModel):
 
 class Organization(SQLModel, table=True):
     id: int = Field(primary_key=True)
+    title: str = Field(sa_column=Column("title", String(255), unique=True))
     parent_id: Optional[int] = Field(foreign_key="organization.id")
-    title: str
     ref_title: str
-    parent: str
     description: str
     servers: List["Server"] = Relationship(
         back_populates="organizations", link_model=ServerOrganizationLink

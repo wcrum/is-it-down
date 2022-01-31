@@ -9,7 +9,7 @@ from app.utils import render_markdown
 from sqlmodel import Session as SQLSession
 from sqlmodel import select
 
-from app.models.server import Catagory
+from app.models.server import Catagory, Organization
 from app.utils.decorators import admin_required
 
 bp = Blueprint("admin", __name__)
@@ -27,7 +27,14 @@ def index():
 
 @bp.route("/organizations", methods=["GET"])
 def get_organizations():
-    return render_template("admin/organizations.html", session=session)
+    with SQLSession(current_app.engine) as s:
+        orgs = select(Organization)
+        results = s.exec(orgs).all()
+        print(results)
+
+        return render_template(
+            "admin/organizations.html", session=session, organizations=results
+        )
 
 
 @bp.route("/catagory", methods=["POST"])
