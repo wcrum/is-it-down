@@ -47,7 +47,7 @@ class Production(Config):
 class Testing(Config):
     TEMPLATES_AUTO_RELOAD = True
     TESTING = True
-    HOST = "localhost"
+    HOST = "0.0.0.0"
     PORT = 8000
     LOCAL_ENV = decode_env(os.environ)
 

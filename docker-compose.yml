@@ -24,4 +24,17 @@ services:
     links:
       - "db:database"
     depends_on:
-      - "db"
+      - db
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+      args:
+        buildno: 1
+    links:
+      - "db:database"
+      - "uaa:uaa"
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
