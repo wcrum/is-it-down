@@ -8,13 +8,6 @@
 
 ### Contributing
 Feel free to make pull requests, refactor my code, add features or anything you are comfortable with! Open Source is amazing and everyone is welcome! To get started read [Getting Started](docs/getting-started.md).
-### Security
-![Jasmine](https://img.shields.io/badge/Snyk-%23563D7C.svg?&logo=snyk&logoColor=white)
-![Snyk](https://snyk.io/test/github/elisoncrum/is-it-down/badge.svg)
+
 ## Templating
 This application was built using my own Full-Stack template which is intended for cloud.gov Cloud Foundrys platform.
-
-[elisoncrum/cloud-gov-flask-template](https://github.com/elisoncrum/cloud-gov-flask-template)
-
-### Contributing
-Feel free to make pull requests, refactor my code, add features or anything you are comfortable with! Open Source is amazing and everyone is welcome! To get started read [Getting Started](docs/getting-started.md).
