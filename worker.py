@@ -70,7 +70,6 @@ def main_thread():
             print(_log)
 
 
-
 while True:
     # iterates forever
     main_thread()
