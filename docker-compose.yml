@@ -15,3 +15,13 @@ services:
       - MYSQL_USER=testing
       - MYSQL_PASSWORD=testing
       - MYSQL_ROOT_PASSWORD=testing
+  worker:
+    build:
+      context: .
+      dockerfile: worker/worker.Dockerfile
+      args:
+        buildno: 1
+    links:
+      - "db:database"
+    depends_on:
+      - "db"
