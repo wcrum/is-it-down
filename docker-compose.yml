@@ -38,3 +38,5 @@ services:
       - db
     ports:
       - "8000:8000"
+    environment:
+      - DATABSE_HOST=databse

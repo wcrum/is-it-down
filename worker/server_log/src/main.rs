@@ -9,29 +9,59 @@ use sqlx::{FromRow, Row};
 #[derive(Debug, FromRow)]
 struct Server {
     id: i32,
-    domain_name: String,
-    domain_type: String,
-    agency: i32,
-    organization: String,
-    status: String,
+    domain_name: Option<String>,
+    domain_type: Option<String>,
+    agency: Option<i32>,
+    organization: Option<String>,
+    status: Option<String>,
     clicks: i32,
-    ipaddress: String,
-    response_time: i32,
-    last_checked: chrono::NaiveDateTime,
+    ipaddress: Option<String>,
+    response_time: Option<i32>,
+    last_checked: Option<chrono::NaiveDateTime>
 }
+
+/*
+CREATE TABLE `server` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `domain_name` varchar(255) NOT NULL,
+  `domain_type` varchar(255) DEFAULT NULL,
+  `agency` int DEFAULT NULL,
+  `organization` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `clicks` int DEFAULT NULL,
+  `ipaddress` varchar(255) DEFAULT NULL,
+  `response_time` int DEFAULT NULL,
+  `last_checked` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+)*/
 
 #[derive(Debug, FromRow)]
 struct ServerLog {
     id: i32,
-    datetime: chrono::NaiveDateTime,
-    server_id: i32,
-    response_code: i32,
-    response_time: i32,
-    ipaddress: String,
+    datetime: Option<chrono::NaiveDateTime>,
+    server_id: Option<i32>,
+    response_code: Option<i32>,
+    response_time: Option<i32>,
+    ipaddress: Option<String>,
     url: String,
-    error: String,
+    error: Option<String>,
 }
 
+/*
+CREATE TABLE `serverlog` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `datetime` datetime NOT NULL,
+  `server_id` int DEFAULT NULL,
+  `response_code` int DEFAULT NULL,
+  `response_time` int DEFAULT NULL,
+  `ipaddress` varchar(255) DEFAULT NULL,
+  `url` varchar(255) NOT NULL,
+  `error` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `server_id` (`server_id`),
+  CONSTRAINT `serverlog_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=424 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+*/
 
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
@@ -54,11 +84,14 @@ async fn main() -> Result<(), sqlx::Error> {
             ipaddress: row.get("ipaddress"),
             response_time: row.get("response_time"),
             last_checked: row.get("last_checked")
-            
         })
         .fetch_all(&pool)
         .await?;
     
-        println!("\n=== select tickets with query.map...:\n{:?}", servers);
+    println!("Worker starting. Scrapping {} servers.", servers.len());
+    for s in &servers {
+
+    }
+    
     Ok(())
 }

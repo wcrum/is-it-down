@@ -54,7 +54,7 @@ class Testing(Config):
     CLIENT_ID = "my_client_id"
     CLIENT_SECRET = "my_client_secret"
 
-    DATABASE_HOST = "database"
+    DATABASE_HOST = os.getenv("DATABASE_HOST", "localhost")
     DATABASE_USERNAME = "testing"
     DATABASE_PASSWORD = "testing"
     DATABASE_NAME = "testing"
