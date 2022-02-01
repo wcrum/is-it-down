@@ -2,9 +2,12 @@
 #![allow(unused)]
 
 extern crate chrono;
+extern crate reqwest;
 use self::chrono::{DateTime, Utc};
 use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
 use sqlx::{FromRow, Row};
+use reqwest::blocking::{ClientBuilder};
+use std::time::{Duration, Instant};
 
 #[derive(Debug, FromRow)]
 struct Server {
@@ -63,6 +66,20 @@ CREATE TABLE `serverlog` (
 ) ENGINE=InnoDB AUTO_INCREMENT=424 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 */
 
+fn request(&url) -> Result<(), Box<dyn std::error::Error>> {
+    let client = reqwest::blocking::ClientBuilder::new()
+        .timeout(Duration::new(15, 0))
+        .build()?;
+    let mut res = client.get(&url)?;
+    let mut body = String::new();
+    res.read_to_string(&mut body)?;
+    println!("Status: {}", res.status());
+    println!("Headers:\n{:#?}", res.headers());
+    println!("Body:\n{}", body);
+    Ok(())
+}
+
+
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
 	let pool = MySqlPoolOptions::new()
@@ -89,28 +106,35 @@ async fn main() -> Result<(), sqlx::Error> {
         .await?;
     
     println!("Worker starting. Scrapping {} servers.", servers.len());
+
     for s in &servers {
         let now = Utc::now().naive_utc();
+        let request_url = format!(
+            "{scheme}://{domain}",
+            scheme = "http",
+            domain = s.domain_name.as_ref().unwrap()
+        );
+
+        let start = Instant::now();
+        let test = request(request_url);
+        println!("{:?}", test);
+
+        let duration = start.elapsed();
+
+
+        
+
+        // catch error
+
+        /*
+        let query = format!(
+"INSERT INTO serverlog (`datetime`,server_id,response_code,response_time,ipaddress,url,error)
+VALUES ({}, {}, {}, {}, {}, {}, {});",
+            now, s.id, response.status(), duration, 5, 6, 7
+        );'
+        */
 
     }
-
-    /*
-    let new_log = sqlx::query_as!(
-        ServerLog,
-        r#"
-        INSERT INTO serverlog (`datetime`,server_id,response_code,response_time,ipaddress,url,error)
-        VALUES ($1, $2, $3, $4, $5, $6, $7);
-        RETURN `datetime`,server_id,response_code,response_time,ipaddress,url,error
-        "#,
-        &now,
-        &s.id, &r.response_code,
-        &r.response_time, &r.ipaddress,
-        &r.url, &r.url
-    )
-    .fetch_one(&pool.clone())
-    .await?;
-    */
-     
 
     Ok(())
 }
