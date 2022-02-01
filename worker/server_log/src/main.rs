@@ -90,8 +90,27 @@ async fn main() -> Result<(), sqlx::Error> {
     
     println!("Worker starting. Scrapping {} servers.", servers.len());
     for s in &servers {
+        let now = Utc::now().naive_utc();
 
     }
-    
+
+    /*
+    let new_log = sqlx::query_as!(
+        ServerLog,
+        r#"
+        INSERT INTO serverlog (`datetime`,server_id,response_code,response_time,ipaddress,url,error)
+        VALUES ($1, $2, $3, $4, $5, $6, $7);
+        RETURN `datetime`,server_id,response_code,response_time,ipaddress,url,error
+        "#,
+        &now,
+        &s.id, &r.response_code,
+        &r.response_time, &r.ipaddress,
+        &r.url, &r.url
+    )
+    .fetch_one(&pool.clone())
+    .await?;
+    */
+     
+
     Ok(())
 }
