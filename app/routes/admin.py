@@ -30,7 +30,6 @@ def get_organizations():
     with SQLSession(current_app.engine) as s:
         orgs = select(Organization)
         results = s.exec(orgs).all()
-        print(results)
 
         return render_template(
             "admin/organizations.html", session=session, organizations=results
@@ -46,7 +45,17 @@ def get_catagory():
     color = data.get("color")
 
     with SQLSession(current_app.engine) as s:
-        if title and color:
+        if cat_id:
+            _catagory = s.exec(select(Catagory).where(
+                Catagory.id == cat_id
+            )).one()
+            _catagory.title = data.get("title")
+            _catagory.meta_ref = data.get("title").lower().replace(" ", "-")
+            _catagory.color = data.get("color")
+            s.add(_catagory)
+            s.commit()
+
+        else:
             _catagory = Catagory(
                 title=data.get("title"),
                 meta_ref=data.get("title").lower().replace(" ", "-"),
@@ -54,14 +63,6 @@ def get_catagory():
             )
             s.add(_catagory)
             s.commit()
-        elif title and color and cat_id:
-            results.title = data.get("title")
-            results.meta_ref = data.get("title").lower().replace(" ", "-")
-            results.color = data.get("color")
-
-            s.add(results)
-            s.commit()
-            s.refresh(results)
 
     return jsonify({"result": "Operate successfully"})
 

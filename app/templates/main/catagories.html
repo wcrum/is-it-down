@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <h1 id="categories">Categories</h1>
+
+            {% for name, catagory in data.items() %}
+            <h3>
+                {{ name }}
+            </h3>
+            <div>
+                <span style="background-color: {{catagory['color']}} !important" class="badge me-2">#{{ catagory['meta_ref']}} </span>
+                <span class="text-nowrap text-success">{{ catagory['up'] }}</span>/<span class="text-nowrap text-danger">{{ catagory['down'] }}</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for obj in catagory["servers"] %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            <a href="/server/{{obj.domain_name}}" class="link-dark">{{ obj.domain_name
+                                }}</a>
+
+                            {% if obj.status == "LOADING" %}
+                            <span class="badge bg-secondary">{{ obj.status }}</span>
+                            {% elif obj.status == "UP" %}
+                            <span class="badge bg-success">{{ obj.status }}</span>
+                            {% else %}
+                            <span class="badge bg-danger">{{ obj.status }}</span>
+                            {% endif %}
+                        </div>
+
+                        <small class="text-muted">
+                            {% if obj.last_checked %}
+                            Last checked {{ obj.last_checked }}
+                            {% else %}
+                            Loading results.
+                            {% endif %}
+                        </small>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

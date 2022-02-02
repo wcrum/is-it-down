@@ -25,6 +25,8 @@ services:
       - "db:database"
     depends_on:
       - db
+    environment:
+      - DATABASE_HOST=database
   web:
     build:
       context: .
@@ -39,4 +41,4 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABSE_HOST=databse
+      - DATABSE_HOST=database

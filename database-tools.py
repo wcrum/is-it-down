@@ -62,19 +62,17 @@ def basic_file(file):
     with Session(engine) as session:
         with open(file, "r") as stream:
             stream = stream.readlines()
+            servers = []
             for row in stream:
-                cats = []
-                _server = Server(
-                    domain_name=row.strip(),
-                )
-                if "tricare" in _server.domain_name.lower():
-                    cats += "Medical"
-                elif "army" in _server.domain_name.lower():
-                    cats += "Army"
-                elif "marines" in _server.domain_name.lower():
-                    cats += "Marines"
+                servers.append(row.strip().lower())
 
-                session.add(_server)
+            for row in list(set(servers)):
+                session.add(
+                    Server(
+                        domain_name = row
+                    )
+                )
+                
         session.commit()
 
 

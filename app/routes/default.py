@@ -15,7 +15,7 @@ from base64 import b64encode
 from sqlmodel import select
 from sqlmodel import Session as SQLSession
 from app.models.user import User
-from app.models.server import Server, ServerLog
+from app.models.server import Server, ServerLog, Catagory
 import jinja2
 import psutil
 
@@ -51,11 +51,15 @@ def server(*args, **kwgs):
         down_logs = s.exec(down_logs).all()
 
         popular_sites = select(Server).limit(25)
-
         popular_sites = s.exec(popular_sites).all()
 
+        sites = []
+        for site in popular_sites:
+            sites.append({"server": site, "catagories": site.catagories})
+
+
     return render_template(
-        "main/server.html", logs=logs, down_logs=down_logs, popular_sites=popular_sites
+        "main/servers.html", logs=logs, down_logs=down_logs, popular_sites=sites
     )
 
     abort(404)
@@ -63,8 +67,35 @@ def server(*args, **kwgs):
 
 @bp.route("/server/<string:sitename>")
 def get_server(sitename, *args, **kwgs):
-    return sitename
+    with SQLSession(current_app.engine) as s:
+        server = s.exec(select(Server).where(Server.domain_name == sitename)).first()
+        print(server)
+        
+    return render_template(
+        "main/server.html"
+    )
 
+@bp.route("/catagories")
+def get_catagories():
+    with SQLSession(current_app.engine) as s:
+        data = {
+            
+        }
+        _catagories = s.exec(select(Catagory)).all()
+
+        for c in _catagories:
+            data[c.title] = {"color": c.color, "servers": c.servers}
+            data[c.title]["up"] = len([x for x in c.servers if x.status == "UP"])
+            data[c.title]["down"] = len(c.servers) - data[c.title]["up"]
+            data[c.title]["meta_ref"] = c.meta_ref
+
+
+        data = dict(sorted(data.items()))
+    return render_template(
+        "main/catagories.html",
+        session = session,
+        data = data
+    )
 
 @bp.before_request
 def before_request():
@@ -106,5 +137,5 @@ def handle_exception(e):
     except Exception:
         e.code = 500
         e.name = "Internal Server Error: {}".format(type(e).__name__)
-        e.description = "{}".format(b64encode(str(e).encode("ascii")).decode("utf-8"))
+        e.description = "{}".format(str(e))
     return render_template("error.html", error=e)

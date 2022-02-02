@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="container-fluid">
+                <div class="row gy-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Is your favorite Government Site down?</h5>
+                            <p class="card-text">"Is your favorite Government Site down?" monitors the statuses of your
+                                favorite
+                                government websites to see if they are down or not. Heavy influence from
+                                isitdownrightnow.com.
+                            </p>
+                            <div class="container">
+                                <div class="row">
+
+                                    <div class="col">
+                                        <div class="card" style="width: 18rem;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Catagory</h5>
+                                                <p class="card-text">View DoD websites with associated catagories.</p>
+                                                <a href="#" class="btn btn-primary">Here</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card" style="width: 18rem;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Organization</h5>
+                                                <p class="card-text">View websites associated with an organization.</p>
+                                                <a href="#" class="btn btn-primary">Here</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-globe"></i> Popular Websites</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for site in popular_sites %}
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">
+                                            <a href="/server/{{site['server'].domain_name}}" class="link-dark">{{ site['server'].domain_name
+                                                }}</a>
+
+                                            {% if site['server'].status == "LOADING" %}
+                                            <span class="badge bg-secondary">{{ site['server'].status }}</span>
+                                            {% elif site['server'].status == "UP" %}
+                                            <span class="badge bg-success">{{ site['server'].status }}</span>
+                                            {% else %}
+                                            <span class="badge bg-danger">{{ site['server'].status }}</span>
+                                            {% endif %}
+                                        </div>
+
+                                        <small class="text-muted">
+                                            {% if site['server'].last_checked %}
+                                            Last checked {{ site['server'].last_checked }}
+                                            {% else %}
+                                            Loading results.
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    {% if site['catagories'] %}
+                                        {% for c in site['catagories'] %}
+                                            <span style="margin-left: 15px; background-color: {{ c.color }} !important" class="badge bg-secondary">{{ c.title }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="container-fluid">
+                <div class="row gy-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-thumbtack"></i> Pinned Servers</h5>
+                            <ul class="list-group list-group-flush">
+                                <small>Login to pin servers.</small>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-network-wired"></i> Latest Sites Checked</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for server_log in logs %}
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">
+                                            <a class="link-dark" style="text-decoration: none"
+                                                href="/server/{{ server_log.url }}">
+                                                {{ server_log.url }}
+                                            </a>
+                                        </div>
+                                        <small class="text-muted">{{ server_log.ipaddress }}</small>
+                                    </div>
+                                    {% if server_log.error %}
+                                    <span class="badge bg-danger rounded-pill">X</span>
+                                    {% else %}
+                                    <span class="badge bg-primary rounded-pill">{{ server_log.response_time|round|int }}
+                                        ms</span>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-cloud-download-alt"></i> Down Right Now</h5>
+                            <ul class="list-group list-group-flush">
+                                {% for down_log in down_logs %}
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{ down_log.domain_name }}</div>
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill">X</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

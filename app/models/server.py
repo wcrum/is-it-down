@@ -51,8 +51,9 @@ class Organization(SQLModel, table=True):
 
 class Server(SQLModel, table=True):
     id: int = Field(primary_key=True)
-    domain_name: str
-    domain_type: Optional[str]
+    scheme: str = Field(default = "http")
+    domain_name: str = Field(sa_column=Column("domain_name", String(255), unique=True))
+    path: Optional[str]
     agency: Optional[int]
     organization: Optional[str]
     status: str = "LOADING"
