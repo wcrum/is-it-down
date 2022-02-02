@@ -1,10 +1,186 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script>
+    function toggleSelf(self) {
+        var row = self.parentElement.parentElement;
+        $(row).find(":input:not(#editButton)").each(function () {
+            $(this).prop('disabled', function (i, v) { return !v; });
+        });
+    };
+    function deleteSelf(self) {
+        self.parentElement.parentElement.remove();
+    }
+    function addOrgRow(self) {
+        var clone = $('.table-reference-org').clone();
+        clone.removeAttr('hidden').removeClass('table-reference-org');
+        $("#organizationTable tbody").append(clone);
+    }
+    function addCatRow(self) {
+        var clone = $('.table-reference-cat').clone();
+        clone.removeAttr('hidden').removeClass('table-reference-cat');
+        $("#catagoryTable tbody").append(clone);
+    }
+    function saveSelf(self) {
+        var data = {};
+        var row = self.parentElement.parentElement;
+        var title = $(row).find("#organizationTitle")[0];
+        var id = $(title).attr("model-id");
+        console.log(id);
+
+        if (validateColor(color) && validateTitle(title)) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/server/add",
+                dataType: 'json',
+                data: {
+                    "id": id,
+                    "title": title.value,
+                    "color": color.value
+                }
+            });
+            toggleSelf(self);
+        }
+    }
+</script>
 <div class="container">
+    <div class="row mb-3 justify-content-center gap-4">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-tools me-2"></i> Admin Tool Box
+                </div>
+                <div class="accordion accordion-flush" id="accordionExample">
+                    <!-- Organization Admin Tool Box-->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapased collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
+                                aria-controls="collapseOne">
+                                Organization Toolbox
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample" style="">
+                            <table id="organizationTable" class="table table-borderless order-list">
+                                <thead>
+                                    <tr>
+                                        <td>Organizations</td>
+                                        <td>Actions</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr hidden class="table-reference-org">
+                                        <td class="col-sm-4">
+                                            <input disabled="" model-id="" onchange="validateTitle(this)"
+                                                id="organizationTitle" placeholder="Super Cool Tech" type="text"
+                                                name="name" class="form-control">
+                                        </td>
+                                        <td class="col-sm-4">
+                                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                                            <button disabled="" onclick="saveSelf(this)" type="button"
+                                                class="btn btn-primary"><i class="fas fa-save"></i></button>
+                                            <button disabled="" onclick="deleteSelf(this)" type="button"
+                                                class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4">
+                                            <input disabled="" model-id="" onchange="validateTitle(this)"
+                                                id="organizationTitle" placeholder="Super Cool Tech" type="text"
+                                                name="name" class="form-control">
+                                        </td>
+                                        <td class="col-sm-4">
+                                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                                            <button disabled="" onclick="saveSelf(this)" type="button"
+                                                class="btn btn-primary"><i class="fas fa-save"></i></button>
+                                            <button disabled="" onclick="deleteSelf(this)" type="button"
+                                                class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <button onclick="addOrgRow(this)" type="button"
+                                                class="btn btn-outline-primary">Add
+                                                row</button>
+                                            <button type="button" onclick="location.reload();"
+                                                class="btn btn-outline-warning"><i class="fas fa-history"></i></button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+                    <!-- Catagory Admin Tool Box-->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapased collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapaseTwo" aria-expanded="false"
+                                aria-controls="collapaseTwo">
+                                Catagory Toolbox
+                            </button>
+                        </h2>
+                        <div id="collapaseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                            data-bs-parent="#accordionExample">
+                            <table id="catagoryTable" class="table table-borderless order-list">
+                                <thead>
+                                    <tr>
+                                        <td>Catagories</td>
+                                        <td>Actions</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-reference-cat">
+                                        <td class="col-sm-4">
+                                            <input disabled="" model-id="" onchange="validateTitle(this)"
+                                                id="catagoryTitle" placeholder="Super Cool Tech" type="text" name="name"
+                                                class="form-control">
+                                        </td>
+                                        <td class="col-sm-4">
+                                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                                            <button disabled="" onclick="saveSelf(this)" type="button"
+                                                class="btn btn-primary"><i class="fas fa-save"></i></button>
+                                            <button disabled="" onclick="deleteSelf(this)" type="button"
+                                                class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>
+                                            <button onclick="addCatRow(this)" type="button"
+                                                class="btn btn-outline-primary">Add
+                                                row</button>
+                                            <button type="button" onclick="location.reload();"
+                                                class="btn btn-outline-warning"><i class="fas fa-history"></i></button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col-8">
-            <h2 id="categories">Server Name<span class="bg-success badge ms-2">OK</span></h2> 
+            <h2 id="categories">Server Name<span class="bg-success badge ms-2">OK</span></h2>
+            <div class="progress" style="width: 25%">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="15"
+                    aria-valuemin="0" aria-valuemax="10"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30"
+                    aria-valuemin="0" aria-valuemax="10"></div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30"
+                    aria-valuemin="0" aria-valuemax="10"></div>
+            </div>
             <div>
                 <a href="#" class="link-dark me-2">Organization</a>
                 <a href="#" class="link-dark">Org 2</a>
