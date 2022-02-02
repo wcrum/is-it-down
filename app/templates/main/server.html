@@ -31,7 +31,7 @@
         if (validateColor(color) && validateTitle(title)) {
             $.ajax({
                 type: "POST",
-                url: "/admin/server/add",
+                url: "/admin/server/",
                 dataType: 'json',
                 data: {
                     "id": id,

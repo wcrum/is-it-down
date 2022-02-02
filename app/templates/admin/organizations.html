@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script>
+    function toggleSelf(self) {
+        var row = self.parentElement.parentElement;
+        $(row).find(":input:not(#editButton)").each(function () {
+            $(this).prop('disabled', function (i, v) { return !v; });
+        });
+    };
+    function deleteSelf(self) {
+        self.parentElement.parentElement.remove();
+    }
+</script>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-8">
@@ -18,7 +29,6 @@
             <table id="catagoryTable" class="table table-borderless order-list">
                 <thead>
                     <tr>
-                        <td>UUID</td>
                         <td>Organization</td>
                         <td>Parent UUID</td>
                         <td>Description</td>
@@ -27,9 +37,6 @@
                 </thead>
                 <tbody>
                     <tr hidden class="hidden-table-reference">
-                        <td class="col">
-                            <button disabled type="button" class="btn btn-outline-primary">1</button>
-                        </td>
                         <td class="col-sm-4">
                             <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
                                 placeholder="Super Cool Company" type="text" name="name" class="form-control" />
@@ -52,9 +59,6 @@
                     </tr>
                     {% if organizations|length == 0 %}
                     <tr>
-                        <td class="col">
-                            <button disabled type="button" class="btn btn-outline-primary">1</button>
-                        </td>
                         <td class="col-sm-4">
                             <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
                                 placeholder="Super Cool Company" type="text" name="name" class="form-control" />
@@ -83,14 +87,16 @@
                         </td>
                         <td class="col-sm-4">
                             <input disabled model-id="" onchange="validateTitle(this)" id="organizationTitle"
-                                placeholder="Super Cool Company" value="{{ org.title }}" type="text" name="name" class="form-control" />
-                        </td>
-                        <td class="col-sm-2">
-                            <input disabled onchange="validateTitle(this)" value="{{ org.parent_id }}" id="organizationParent" placeholder="Parent"
+                                placeholder="Super Cool Company" value="{{ org.title }}" type="text" name="name"
                                 class="form-control" />
                         </td>
+                        <td class="col-sm-2">
+                            <input disabled onchange="validateTitle(this)" value="{{ org.parent_id }}"
+                                id="organizationParent" placeholder="Parent" class="form-control" />
+                        </td>
                         <td class="col-sm-4">
-                            <textarea disabled class="form-control"id="organizationDesc" rows="1">{{ org.description }}</textarea>
+                            <textarea disabled class="form-control" id="organizationDesc"
+                                rows="1">{{ org.description }}</textarea>
                         </td>
                         <td class="col-sm-4">
                             <button onclick="toggleSelf(this)" id="editButton" type="button"
@@ -112,9 +118,6 @@
                             <button id="addRow" type="button" class="btn btn-outline-primary">Add row</button>
                             <button type="button" class="btn btn-outline-warning"><i
                                     class="fas fa-history"></i></button>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-primary">Save All</button>
                         </td>
                     </tr>
                 </tfoot>
