@@ -70,7 +70,9 @@
                                     </div>
                                     {% if site['catagories'] %}
                                         {% for c in site['catagories'] %}
-                                            <span style="margin-left: 15px; background-color: {{ c.color }} !important" class="badge bg-secondary">{{ c.title }}</span>
+                                            <a href="/catagories/{{c.meta_ref}}">
+                                                <span style="margin-left: 15px; background-color: {{ c.color }} !important" class="badge bg-secondary">{{ c.title }}</span>
+                                            </a>
                                         {% endfor %}
                                     {% endif %}
                                 </li>

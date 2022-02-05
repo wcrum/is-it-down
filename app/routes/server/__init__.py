@@ -32,8 +32,13 @@ def post_server():
 def get_server(sitename, *args, **kwgs):
     with SQLSession(current_app.engine) as s:
         result = s.exec(select(Server).where(Server.domain_name == sitename)).first()
+        result.clicks += 1
+        s.add(result)
+        s.commit()
+        s.refresh(result)
+        
         logs = s.exec(
-            select(ServerLog).where(ServerLog.server_id == result.id).limit(25)
+            select(ServerLog).where(ServerLog.server_id == result.id).limit(10)
         ).all()
 
         server = type("data", (object,), {})()
@@ -42,14 +47,17 @@ def get_server(sitename, *args, **kwgs):
         server.logs = logs
         server.organizations = result.organizations
 
+
+
     return render_template("main/server.html", session=session, server=server)
+
 
 @bp.route("/<string:sitename>/reports")
 def get_server_reports(sitename, *args, **kwgs):
-    DATE_TIME_STRING_FORMAT = '%Y-%m-%dT%H:00:00'
+    DATE_TIME_STRING_FORMAT = "%Y-%m-%dT%H:00:00"
 
     now = datetime.now()
-    last_week = now - timedelta(days = 7)
+    last_week = now - timedelta(days=7)
 
     with SQLSession(current_app.engine) as s:
         result = s.exec(select(Server).where(Server.domain_name == sitename)).first()
@@ -62,26 +70,26 @@ def get_server_reports(sitename, *args, **kwgs):
         while iter_date <= now:
             data[iter_date.strftime(DATE_TIME_STRING_FORMAT)] = 0
             iter_date += timedelta(hours=1)
-            
+
         for r in result:
             r = list(r)
-            if not (r_day := datetime.strptime(r[0], DATE_TIME_STRING_FORMAT)) < last_week:
+            if (
+                not (r_day := datetime.strptime(r[0], DATE_TIME_STRING_FORMAT))
+                < last_week
+            ):
                 data[r_day.strftime(DATE_TIME_STRING_FORMAT)] = r[1]
-        
+
         data = [[x, y] for x, y in data.items()]
     return jsonify(data)
 
 
-@bp.route("/<string:sitename>/report", methods = ["POST"])
+@bp.route("/<string:sitename>/report", methods=["POST"])
 def post_server_report(sitename, *args, **kwgs):
     now = datetime.now()
     with SQLSession(current_app.engine) as s:
         result = s.exec(select(Server).where(Server.domain_name == sitename)).first()
-        report = ServerReport(
-            datetime = now,
-            server_id = result.id
-        )
+        report = ServerReport(datetime=now, server_id=result.id)
         s.add(report)
         s.commit()
-        
+
     return jsonify({"code": 200, "description": "Added report."})

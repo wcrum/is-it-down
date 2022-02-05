@@ -29,10 +29,10 @@ def server(*args, **kwgs):
         logs = select(ServerLog).order_by(ServerLog.id.desc()).limit(5)
         logs = s.exec(logs).all()
 
-        down_logs = select(Server).where(Server.status == "DOWN")
+        down_logs = select(Server).where(Server.status == "DOWN").limit(10)
         down_logs = s.exec(down_logs).all()
 
-        popular_sites = select(Server).limit(25)
+        popular_sites = select(Server).order_by(Server.clicks.desc()).limit(25)
         popular_sites = s.exec(popular_sites).all()
 
         sites = []
@@ -75,6 +75,21 @@ def get_catagories():
             data[c.title]["up"] = len([x for x in c.servers if x.status == "UP"])
             data[c.title]["down"] = len(c.servers) - data[c.title]["up"]
             data[c.title]["meta_ref"] = c.meta_ref
+
+        data = dict(sorted(data.items()))
+    return render_template("main/catagories.html", session=session, data=data)
+
+
+@bp.route("/catagories/<string:name>")
+def get_catagory(name):
+    with SQLSession(current_app.engine) as s:
+        data = {}
+        _catagories = s.exec(select(Catagory).where(Catagory.meta_ref == name)).first()
+
+        data[_catagories.title] = {"color": _catagories.color, "servers": _catagories.servers}
+        data[_catagories.title]["up"] = len([x for x in _catagories.servers if x.status == "UP"])
+        data[_catagories.title]["down"] = len(_catagories.servers) - data[_catagories.title]["up"]
+        data[_catagories.title]["meta_ref"] = _catagories.meta_ref
 
         data = dict(sorted(data.items()))
     return render_template("main/catagories.html", session=session, data=data)

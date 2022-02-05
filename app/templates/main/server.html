@@ -259,10 +259,12 @@
                 </div>
                 <div class="col-2">
                     <h2>
-                        <button type="button" class="btn btn-outline-primary">
-                            <i class="fas fa-external-link-alt"></i>
-
-                        </button>
+                        <a href="http://{{ server.server.domain_name }}" target="_blank">
+                            <button type="button" class="btn btn-outline-primary">
+                                <i class="fas fa-external-link-alt"></i>
+    
+                            </button>
+                        </a>
 
                     </h2>
                 </div>
@@ -274,8 +276,11 @@
             </div>
             <div>
                 {% for catagory in server.catagories %}
-                <span style="background-color: {{ catagory.color }} !important;" class="badge me-2">{{ catagory.title
-                    }}</span>
+                <a href="/catagories/{{catagory.meta_ref}}">
+                    <span style="background-color: {{ catagory.color }} !important;" class="badge me-2">
+                        {{ catagory.title}}
+                    </span>
+                </a>
                 {% endfor %}
             </div>
             {% if server.server.last_checked %}
