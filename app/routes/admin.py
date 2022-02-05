@@ -36,6 +36,16 @@ def get_organizations():
         )
 
 
+@bp.route("/server/organization", methods=["POST", "DELETE"])
+def post_server():
+    if request.method == "POST":
+        data = request.form
+
+        org_id = data.get("id").strip()
+        title = data.get("title").strip()
+        return jsonify({}), 200
+
+
 @bp.route("/catagory", methods=["POST"])
 def get_catagory():
     data = request.form
@@ -46,9 +56,7 @@ def get_catagory():
 
     with SQLSession(current_app.engine) as s:
         if cat_id:
-            _catagory = s.exec(select(Catagory).where(
-                Catagory.id == cat_id
-            )).one()
+            _catagory = s.exec(select(Catagory).where(Catagory.id == cat_id)).one()
             _catagory.title = data.get("title")
             _catagory.meta_ref = data.get("title").lower().replace(" ", "-")
             _catagory.color = data.get("color")

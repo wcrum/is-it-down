@@ -22,6 +22,30 @@ import psutil
 bp = Blueprint("index", __name__)
 
 
+@bp.route("/")
+def server(*args, **kwgs):
+
+    with SQLSession(current_app.engine) as s:
+        logs = select(ServerLog).order_by(ServerLog.id.desc()).limit(5)
+        logs = s.exec(logs).all()
+
+        down_logs = select(Server).where(Server.status == "DOWN")
+        down_logs = s.exec(down_logs).all()
+
+        popular_sites = select(Server).limit(25)
+        popular_sites = s.exec(popular_sites).all()
+
+        sites = []
+        for site in popular_sites:
+            sites.append({"server": site, "catagories": site.catagories})
+
+    return render_template(
+        "main/servers.html", logs=logs, down_logs=down_logs, popular_sites=sites
+    )
+
+    abort(404)
+
+
 @bp.route("/<path:path>")
 def handle_posts(*args, **kwgs):
     if request.path in current_app.pages.registered:
@@ -40,47 +64,10 @@ def techstack(*args, **kwgs):
     abort(404)
 
 
-@bp.route("/")
-def server(*args, **kwgs):
-
-    with SQLSession(current_app.engine) as s:
-        logs = select(ServerLog).order_by(ServerLog.id.desc()).limit(5)
-        logs = s.exec(logs).all()
-
-        down_logs = select(Server).where(Server.status == "DOWN")
-        down_logs = s.exec(down_logs).all()
-
-        popular_sites = select(Server).limit(25)
-        popular_sites = s.exec(popular_sites).all()
-
-        sites = []
-        for site in popular_sites:
-            sites.append({"server": site, "catagories": site.catagories})
-
-
-    return render_template(
-        "main/servers.html", logs=logs, down_logs=down_logs, popular_sites=sites
-    )
-
-    abort(404)
-
-
-@bp.route("/server/<string:sitename>")
-def get_server(sitename, *args, **kwgs):
-    with SQLSession(current_app.engine) as s:
-        server = s.exec(select(Server).where(Server.domain_name == sitename)).first()
-        print(server)
-        
-    return render_template(
-        "main/server.html"
-    )
-
 @bp.route("/catagories")
 def get_catagories():
     with SQLSession(current_app.engine) as s:
-        data = {
-            
-        }
+        data = {}
         _catagories = s.exec(select(Catagory)).all()
 
         for c in _catagories:
@@ -89,13 +76,9 @@ def get_catagories():
             data[c.title]["down"] = len(c.servers) - data[c.title]["up"]
             data[c.title]["meta_ref"] = c.meta_ref
 
-
         data = dict(sorted(data.items()))
-    return render_template(
-        "main/catagories.html",
-        session = session,
-        data = data
-    )
+    return render_template("main/catagories.html", session=session, data=data)
+
 
 @bp.before_request
 def before_request():

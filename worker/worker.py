@@ -26,10 +26,10 @@ def main_thread():
                     "http://" + server.domain_name, stream=True, timeout=30
                 )
 
-            except requests.exceptions.ConnectionError:
-                error = "DOWN"
             except requests.exceptions.Timeout:
                 error = "TIMEDOUT"
+            except requests.exceptions.ConnectionError:
+                error = "DOWN"
             except Exception:
                 error = "GENERAL ERROR"
 
@@ -67,7 +67,7 @@ def main_thread():
             session.commit()
             session.refresh(server)
             session.refresh(_log)
-            print(_log)
+            print(_log, flush=True)
 
 
 while True:

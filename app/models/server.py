@@ -51,13 +51,14 @@ class Organization(SQLModel, table=True):
 
 class Server(SQLModel, table=True):
     id: int = Field(primary_key=True)
-    scheme: str = Field(default = "http")
+    scheme: str = Field(default="http")
     domain_name: str = Field(sa_column=Column("domain_name", String(255), unique=True))
     path: Optional[str]
     agency: Optional[int]
     organization: Optional[str]
     status: str = "LOADING"
     server_log: List["ServerLog"] = Relationship(back_populates="server")
+    server_reports: List["ServerReport"] = Relationship(back_populates="server")
     clicks: int = 0
     ipaddress: Optional[str]
     response_time: Optional[int] = None
@@ -84,3 +85,10 @@ class ServerLog(SQLModel, table=True):
     url: str
 
     error: Optional[str]
+
+
+class ServerReport(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    datetime: datetime
+    server_id: Optional[int] = Field(default=None, foreign_key="server.id")
+    server: Optional[Server] = Relationship(back_populates="server_reports")

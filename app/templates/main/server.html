@@ -2,6 +2,10 @@
 
 {% block content %}
 <script>
+    function containsSpecialChars(str) {
+        const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+        return specialChars.test(str);
+    }
     function toggleSelf(self) {
         var row = self.parentElement.parentElement;
         $(row).find(":input:not(#editButton)").each(function () {
@@ -21,6 +25,38 @@
         clone.removeAttr('hidden').removeClass('table-reference-cat');
         $("#catagoryTable tbody").append(clone);
     }
+    function validateTitle(self) {
+        self.value = self.value.trim()
+        if (containsSpecialChars(self.value) || self.value.length == 0) {
+            $(self).addClass("is-invalid");
+            $(self).removeClass("is-valid");
+            return false;
+        } else {
+            $(self).addClass("is-valid");
+            $(self).removeClass("is-invalid");
+            return true;
+        }
+    }
+    function saveCatagory(self) {
+        var data = {};
+        var row = self.parentElement.parentElement;
+        var title = $(row).find("#catagoryTitle")[0];
+        var id = $(title).attr("model-id");
+        console.log(id);
+
+        if (validateTitle(title)) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/server/catagory",
+                dataType: 'json',
+                data: {
+                    "id": id,
+                    "title": title.value,
+                }
+            });
+            toggleSelf(self);
+        }
+    }
     function saveSelf(self) {
         var data = {};
         var row = self.parentElement.parentElement;
@@ -28,15 +64,14 @@
         var id = $(title).attr("model-id");
         console.log(id);
 
-        if (validateColor(color) && validateTitle(title)) {
+        if (validateTitle(title)) {
             $.ajax({
                 type: "POST",
-                url: "/admin/server/",
+                url: "/admin/server/organization",
                 dataType: 'json',
                 data: {
                     "id": id,
                     "title": title.value,
-                    "color": color.value
                 }
             });
             toggleSelf(self);
@@ -57,7 +92,7 @@
                             <button class="accordion-button collapased collapsed" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false"
                                 aria-controls="collapseOne">
-                                Organization Toolbox
+                                <i class="fas fa-users me-2"></i> Organization Toolbox
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
@@ -122,7 +157,7 @@
                             <button class="accordion-button collapased collapsed" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#collapaseTwo" aria-expanded="false"
                                 aria-controls="collapaseTwo">
-                                Catagory Toolbox
+                                <i class="fas fa-book me-2"></i> Catagory Toolbox
                             </button>
                         </h2>
                         <div id="collapaseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -135,22 +170,59 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="table-reference-cat">
+                                    <tr hidden class="table-reference-cat me-2">
                                         <td class="col-sm-4">
-                                            <input disabled="" model-id="" onchange="validateTitle(this)"
-                                                id="catagoryTitle" placeholder="Super Cool Tech" type="text" name="name"
+                                            <input disabled="" onchange="validateTitle(this)" id="catagoryTitle"
+                                                placeholder="Super Cool Tech" type="text" name="name"
                                                 class="form-control">
                                         </td>
                                         <td class="col-sm-4">
                                             <button onclick="toggleSelf(this)" id="editButton" type="button"
                                                 class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
-                                            <button disabled="" onclick="saveSelf(this)" type="button"
+                                            <button disabled="" onclick="saveCatagory(this)" type="button"
                                                 class="btn btn-primary"><i class="fas fa-save"></i></button>
                                             <button disabled="" onclick="deleteSelf(this)" type="button"
                                                 class="btn btn-danger"><i class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
+                                    {% if server.catagories|length == 0 %}
+                                    <tr class="me-2">
+                                        <td class="col-sm-4">
+                                            <input disabled="" onchange="validateTitle(this)" id="catagoryTitle"
+                                                placeholder="Super Cool Tech" type="text" name="name"
+                                                class="form-control">
+                                        </td>
+                                        <td class="col-sm-4">
+                                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                                            <button disabled="" onclick="saveCatagory(this)" type="button"
+                                                class="btn btn-primary"><i class="fas fa-save"></i></button>
+                                            <button disabled="" onclick="deleteSelf(this)" type="button"
+                                                class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    {% for catagory in server.catagories %}
+                                    <tr class="me-2">
+                                        <td class="col-sm-4">
+                                            <input disabled="" model-id="{{ catagory.id }}"
+                                                onchange="validateTitle(this)" id="catagoryTitle"
+                                                value="{{ catagory.title }}" placeholder="Super Cool Tech" type="text"
+                                                name="name" class="form-control">
+                                        </td>
+                                        <td class="col-sm-4">
+                                            <button onclick="toggleSelf(this)" id="editButton" type="button"
+                                                class="btn btn-outline-primary"><i class="fas fa-cog"></i></button>
+                                            <button disabled="" onclick="saveCatagory(this)" type="button"
+                                                class="btn btn-primary"><i class="fas fa-save"></i></button>
+                                            <button disabled="" onclick="deleteSelf(this)" type="button"
+                                                class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
                                 </tbody>
+
                                 <tfoot>
                                     <tr>
                                         <td>
@@ -172,32 +244,165 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-8">
-            <h2 id="categories">Server Name<span class="bg-success badge ms-2">OK</span></h2>
-            <div class="progress" style="width: 25%">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="15"
-                    aria-valuemin="0" aria-valuemax="10"></div>
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30"
-                    aria-valuemin="0" aria-valuemax="10"></div>
-                <div class="progress-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30"
-                    aria-valuemin="0" aria-valuemax="10"></div>
+            <div class="row justify-content-between">
+                <div class="col-10">
+                    <h2 id="categories">{{ server.server.domain_name }}
+                        {% if server.server.status == "LOADING" %}
+                        <span class="badge bg-secondary">{{ server.server.status }}</span>
+                        {% elif server.server.status == "UP" %}
+                        <span class="badge bg-success">{{ server.server.status}}</span>
+                        {% else %}
+                        <span class="badge bg-danger">{{ server.server.status }}</span>
+                        {% endif %}
+                    </h2>
+                    {{ server.server.ipaddress }}
+                </div>
+                <div class="col-2">
+                    <h2>
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="fas fa-external-link-alt"></i>
+
+                        </button>
+
+                    </h2>
+                </div>
             </div>
             <div>
-                <a href="#" class="link-dark me-2">Organization</a>
-                <a href="#" class="link-dark">Org 2</a>
+                {% for org in server.organizations %}
+                <a href="/organization/{{ organization.meta_ref }}" class="link-dark me-2">{{ organization.title }}</a>
+                {% endfor %}
             </div>
             <div>
-                <span class="bg-primary badge me-2">Catagory</span>
-                <span class="bg-primary badge me-2">Catagory</span>
+                {% for catagory in server.catagories %}
+                <span style="background-color: {{ catagory.color }} !important;" class="badge me-2">{{ catagory.title
+                    }}</span>
+                {% endfor %}
             </div>
-            <small class="text-muted">Last Checked ...</small>
+            {% if server.server.last_checked %}
+
+            <small>Last checked {{server.server.last_checked }}</small>
+            {% else %}
+            <small>Loading results.</small>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <h3>Traffic</h3>
+            <figure class="highcharts-figure">
+                <div id="container"></div>
+            </figure>
+
+            <script>
+                let graph_data;
+                let response = $.getJSON("/server/{{server.server.domain_name}}/reports", function (data) {
+                    $.each(data, function (index) {
+                        data[index][0] = Date.parse(data[index][0]);
+                    })
+                    Highcharts.chart('container', {
+                        chart: {
+                            type: 'areaspline',
+                            animation: false,
+                            height: '300px',
+                            pointStart: Date.UTC(2020, 0, 1),
+
+                        },
+                        title: {
+                            text: 'Reported Issues',
+                        },
+                        subtitle: {
+                            text: 'User Collected Issue Anaylzer.',
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                month: '%e. %b',
+                                year: '%b'
+                            },
+                            title: {
+                                text: 'Date'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: '# of Reports'
+                            },
+                            min: 0
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x:%e. %b}: {point.y:.2f} Reports'
+                        },
+
+                        plotOptions: {
+                            series: {
+                                marker: {
+                                    enabled: true
+                                }
+                            }
+                        },
+                        exporting: { enabled: false },
+
+                        series: [{
+                            name: "Reports",
+                            data: response.responseJSON,
+                            color: "#dc3545"
+                        }],
+                        plotOptions: {
+                            areaspline: {
+                                fillOpacity: 0.5,
+                                animation: false,
+                            }
+                        },
+                    });
+                });
+            </script>
+        </div>
+        <div class="col-4">
+            <h3>History</h3>
             <ul class="list-group list-group-flush">
+                {% for server_log in server.logs %}
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
-                        </small>
+                        <div class="fw-bold">
+                            <a class="link-dark" style="text-decoration: none" href="/server/{{ server_log.url }}">
+                                {{ server_log.datetime }}
+                            </a>
+                        </div>
+                        <small class="text-muted">{{ server_log.ipaddress }}</small>
                     </div>
+                    {% if server_log.error %}
+                    <span class="badge bg-danger rounded-pill">X</span>
+                    {% else %}
+                    <span class="badge bg-primary rounded-pill">{{ server_log.response_time|round|int }}
+                        ms</span>
+                    {% endif %}
                 </li>
+                {% endfor %}
             </ul>
         </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <script>
+                function makeReport(){
+                    $.ajax({
+                        type: "POST",
+                        url: "/server/{{server.server.domain_name}}/report",
+                    }).done(function(){
+                        document.location.reload(true);
+
+                    });
+                }
+            </script>
+            Having problems with this page?
+                <button onclick="makeReport()" type="button" class="btn btn-outline-danger">
+                    <i class="fas fa-thumbs-down"></i>
+                    Report Issue
+                </button>
+
+        </div>
+
     </div>
 </div>
 {% endblock %}

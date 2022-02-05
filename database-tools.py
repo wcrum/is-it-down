@@ -67,12 +67,8 @@ def basic_file(file):
                 servers.append(row.strip().lower())
 
             for row in list(set(servers)):
-                session.add(
-                    Server(
-                        domain_name = row
-                    )
-                )
-                
+                session.add(Server(domain_name=row))
+
         session.commit()
 
 
