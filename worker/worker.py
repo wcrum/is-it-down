@@ -27,7 +27,7 @@ def main_thread():
                 )
 
             except requests.exceptions.Timeout:
-                error = "TIMEDOUT"
+                error = "TIME OUT"
             except requests.exceptions.ConnectionError:
                 error = "DOWN"
             except Exception:

@@ -51,27 +51,24 @@ def get_server_reports(sitename, *args, **kwgs):
     now = datetime.now()
     last_week = now - timedelta(days = 7)
 
-    data = []
     with SQLSession(current_app.engine) as s:
         result = s.exec(select(Server).where(Server.domain_name == sitename)).first()
         statement = f"SELECT date_format( `datetime`, '{DATE_TIME_STRING_FORMAT}' ) as dt, count( id ) FROM  serverreport WHERE server_id = {result.id} GROUP BY dt"
         result = s.execute(statement).all()
 
-        ADD_NOW = True
-        ADD_HIST = True
+        data = {}
+
+        iter_date = last_week
+        while iter_date <= now:
+            data[iter_date.strftime(DATE_TIME_STRING_FORMAT)] = 0
+            iter_date += timedelta(hours=1)
+            
         for r in result:
             r = list(r)
             if not (r_day := datetime.strptime(r[0], DATE_TIME_STRING_FORMAT)) < last_week:
-                if r_day.day == now.day:
-                    ADD_NOW = False
-                if r_day.day == last_week.day:
-                    ADD_HIST = False
-                data += [list(r)]
-
-        if ADD_NOW:
-            data.append([now.strftime(DATE_TIME_STRING_FORMAT), 0])
-        if ADD_HIST:
-            data = [[last_week.strftime(DATE_TIME_STRING_FORMAT), 0]] + data
+                data[r_day.strftime(DATE_TIME_STRING_FORMAT)] = r[1]
+        
+        data = [[x, y] for x, y in data.items()]
     return jsonify(data)
 
 
