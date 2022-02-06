@@ -6,3 +6,28 @@ organizations:
     parent: Super Big Agency
     ref_title: 3-cyber-space
     description: This agency also does cool tech stuff.
+catagories:
+  Army:
+    color: 81613c
+    match: "%army.mil"
+  Marine Corps:
+    color: 373d31
+    match: "%marines.mil"
+  Airforce:
+    color: 00308f
+    match: "%af.mil"
+  Navy:
+    color: 000080
+    match: "%navy.mil"
+  Public:
+    color: 87ceeb
+    match: "%.com"
+  Government:
+    color: 263238
+    match: "%.gov"
+  Medical:
+    color: c62828
+    match: "%tricare.mil"
+  Education:
+    color: ff8f00
+    match: "%.edu"
