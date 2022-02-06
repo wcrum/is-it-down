@@ -11,7 +11,10 @@
                 {{ name }}
             </h3>
             <div>
-                <span style="background-color: {{catagory['color']}} !important" class="badge me-2">#{{ catagory['meta_ref']}} </span>
+                <a href="/catagories/{{ catagory['meta_ref'] }}">
+
+                    <span style="background-color: {{catagory['color']}} !important" class="badge me-2">#{{ catagory['meta_ref']}} </span>
+                </a>
                 <span class="text-nowrap text-success">{{ catagory['up'] }}</span>/<span class="text-nowrap text-danger">{{ catagory['down'] }}</span>
             </div>
             <ul class="list-group list-group-flush">

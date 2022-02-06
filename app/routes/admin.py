@@ -47,6 +47,7 @@ def post_server():
 
 
 @bp.route("/catagory", methods=["POST"])
+@admin_required
 def get_catagory():
     data = request.form
 

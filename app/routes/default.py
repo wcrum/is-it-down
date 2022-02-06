@@ -29,7 +29,7 @@ def server(*args, **kwgs):
         logs = select(ServerLog).order_by(ServerLog.id.desc()).limit(5)
         logs = s.exec(logs).all()
 
-        down_logs = select(Server).where(Server.status == "DOWN").limit(10)
+        down_logs = select(Server).where(Server.status != "UP").limit(10)
         down_logs = s.exec(down_logs).all()
 
         popular_sites = select(Server).order_by(Server.clicks.desc()).limit(25)

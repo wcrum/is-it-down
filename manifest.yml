@@ -10,10 +10,6 @@ applications:
   - type: web
     command: gunicorn main:app -b :8080
     instances: 1
-  - type: worker
-    command: python3 worker.py
-    health-check-type: process
-    instances: 1
   env:
     APP_SETTINGS: Production
   services:
