@@ -1,0 +1,4 @@
+@font-face {
+    font-family: 'PublicSans';
+    src: local('PublicSans'), url(./fonts/PublicSans-VariableFont_wght.ttf) format('truetype');
+}
