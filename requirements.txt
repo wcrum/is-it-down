@@ -4,7 +4,7 @@ certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.10
 click==8.0.3
-cryptography==36.0.1
+cryptography==39.0.1
 Flask==2.0.2
 greenlet==1.1.2
 gunicorn==20.1.0
